@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# v0.05 
+# v0.05
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -19,7 +19,7 @@ autorecon_installation () {
 }
 
 zsh_installation() {
-	if [ ! -d '$HOME/.zshrc' ]; then	
+	if [ ! -f '$HOME/.zshrc' ]; then	
 		echo "\033[34m[!] Installing ZSH and Plugins \033[0m"
 		sh -c "$(wget -q https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 		git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -35,7 +35,7 @@ zsh_installation() {
 }
 
 nerdfont_installation() {
-	if [ ! -d '$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf' ]; then	
+	if [ ! -f "$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf" ]; then	
 		echo "\033[34m[!] Installing nerdfont \033[0m"
 		wget -q -P $HOME/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
 		unzip $HOME/.local/share/fonts/JetBrainsMono.zip -d $HOME/.local/share/fonts/
@@ -114,7 +114,6 @@ catpuccin_installation () {
 	echo $CTO
 }
 
-
 copyq_installation () {
 	copyq_service="/etc/systemd/system/copyq.service"
 	echo "\033[34m[!] Setting CopyQ \033[0m"
@@ -143,14 +142,13 @@ copyq_installation () {
 	echo $CO
 }
 
-
+# superfile
 superfile_installation () {
 	echo "\033[34m[!] Installing Superfile File Manager \033[0m"
 	bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
 	SPFO="\033[32m[+] Superfile File Manager Installed \033[0m"
 	echo $SPFO
 }
-
 
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
@@ -178,7 +176,7 @@ main () {
 	copyq_installation
 	superfile_installation
 	alias_environment_installation
-	
+
 	echo $ATRO
 	echo $NFO
 	echo $ZSHO
