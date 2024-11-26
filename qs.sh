@@ -1,61 +1,60 @@
 #!/usr/bin/sh
-# v0.03
-
-#### Installing
-# update and download apt
-
+# v0.04
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
 	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
 	sudo apt-get update -y && sudo apt-get upgrade -y
+	sudo apt remove needrestart
 	echo "\033[34m[!] Installing CopyQ, Terminator Terminal and Sublime Gobuster \033[0m"
 	sudo apt-get install copyq terminator sublime-text gobuster seclists curl dnsrecon enum4linux feroxbuster gobuster impacket-scripts nbtscan nikto nmap onesixtyone oscanner redis-tools smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf nuclei python3-venv --fix-missing -y
 }
 
-# autorecon
 autorecon_installation () {
 	python3 -m pip install --user pipx --break-system-packages
 	python3 -m pipx ensurepath
 	pipx install git+https://github.com/Tib3rius/AutoRecon.git
 }
-# zsh
+
 zsh_installation() {
 	if [ ! -d '$HOME/.zshrc' ]; then	
 		echo "\033[34m[!] Installing ZSH and Plugins \033[0m"
 		sh -c "$(wget -q https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-		echo "\033[32m[+] ZSH Installed \033[0m" 
 		git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 		git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 		echo "plugins=(git zsh-syntax-highlighting zsh-autosuggestions )" >> $HOME/.zshrc
 		echo "source $HOME/.oh-my-zsh/oh-my-zsh.sh" >> $HOME/.zshrc
+		ZSHO="\033[32m[+] ZSH Installed \033[0m" 
+		echo $ZSHO
 	else
-		echo "\033[34m[!] ZSH is already installed.\033[0m"
+		ZSHO="\033[34m[!] ZSH is already installed.\033[0m"
+		echo $ZSHO
 	fi
 }
 
-# nerdfont
 nerdfont_installation() {
 	if [ ! -d '$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf' ]; then	
 		echo "\033[34m[!] Installing nerdfont \033[0m"
 		wget -q -P $HOME/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
 		unzip $HOME/.local/share/fonts/JetBrainsMono.zip -d $HOME/.local/share/fonts/
 		fc-cache -f $HOME/.local/share/fonts/
-		echo "\033[32m[+] nerdfont installed \033[0m"
+		NFO="\033[32m[+] nerdfont installed \033[0m"
+		echo $NFO
+		
 	else
-		echo "\033[34m[!] NerdFont is already installed.\033[0m"
+		NFO="\033[34m[!] NerdFont is already installed.\033[0m"
+		echo $NFO
 	fi
 }
 
-# go
 go_installation () {
 	echo "\033[34m[!] Installing Go \033[0m"
 	sh -c "(wget -q https://go.dev/dl/go1.23.3.linux-amd64.tar.gz -O $HOME/Downloads/go1.23.3.linux-amd64.tar.gz)"
 	sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $HOME/Downloads/go1.23.3.linux-amd64.tar.gz
 	export PATH="$PATH:/usr/local/go/bin"
-	echo "\033[32m[+] Go Installed and Path is set"
+	GOO="\033[32m[+] Go Installed and Path is set"
+	echo $GOO
 }
 
-# catpuccin setting
 catpuccin_installation () {
 	terminator_config="$terminator_config"
 	echo "\033[34m[!] Installing Terminator catpuccin\033[0m"
@@ -108,10 +107,10 @@ catpuccin_installation () {
 	echo  '      type = Terminal' >> $HOME/$terminator_config
 	echo  '      parent = window0' >> $HOME/$terminator_config
 	echo  '[plugins]' >> $HOME/$terminator_config
-	echo "\033[32m[+] Terminator catpuccin set \033[0m"
+	CTO="\033[32m[+] Terminator catpuccin set \033[0m"
+	echo $CTO
 }
 
-# copyq
 copyq_installation () {
 	copyq_service="$copyq_service"
 	echo "\033[34m[!] Setting CopyQ \033[0m"
@@ -136,17 +135,17 @@ copyq_installation () {
 	sudo systemctl daemon-reload
 	sudo systemctl enable copyq.service
 	sudo systemctl start copyq.service
-	echo "\033[32m[+] CopyQ Finished Installing \033[0m"
+	CO="\033[32m[+] CopyQ Finished Installing \033[0m"
+	echo $CO
 }
 
-# superfile
 superfile_installation () {
 	echo "\033[34m[!] Installing Superfile File Manager \033[0m"
 	bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
-	echo "\033[32m[+] Superfile File Manager Installed \033[0m"
+	SPFO="\033[32m[+] Superfile File Manager Installed \033[0m"
+	echo $SPFO
 }
 
-# alias and environment setup
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
 	export PATH="$HOME/.local/bin:$PATH"
@@ -162,10 +161,8 @@ alias_environment_installation () {
 }
 
 main () {
-	# starting
 	echo "\033[34m[!] Updating\033[0m"
 	
-	# functions
 	preparation
 	autorecon_installation
 	zsh_installation
@@ -176,7 +173,14 @@ main () {
 	superfile_installation
 	alias_environment_installation
 	
-	# Success
+	echo $NFO
+	echo $ZSHO
+	echo $NFO
+	echo $GOO
+	echo $CTO
+	echo $CO
+	echo $SPFO
+	echo "\033[32m[+] Alias has been set \033[0m"
 	echo "\033[32m[+] Installation Successful! \033[0m"
 }
 
