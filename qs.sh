@@ -1,5 +1,6 @@
 #!/usr/bin/sh
-# v0.04
+# v0.05 
+
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
 	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
@@ -13,6 +14,8 @@ autorecon_installation () {
 	python3 -m pip install --user pipx --break-system-packages
 	python3 -m pipx ensurepath
 	pipx install git+https://github.com/Tib3rius/AutoRecon.git
+	ATRO="\033[32m[+] AutoRecon has been installed. \033[0m"
+	echo $ATRO
 }
 
 zsh_installation() {
@@ -23,7 +26,7 @@ zsh_installation() {
 		git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 		echo "plugins=(git zsh-syntax-highlighting zsh-autosuggestions )" >> $HOME/.zshrc
 		echo "source $HOME/.oh-my-zsh/oh-my-zsh.sh" >> $HOME/.zshrc
-		ZSHO="\033[32m[+] ZSH Installed \033[0m" 
+		ZSHO="\033[32m[+] ZSH has been installed. \033[0m" 
 		echo $ZSHO
 	else
 		ZSHO="\033[34m[!] ZSH is already installed.\033[0m"
@@ -37,7 +40,7 @@ nerdfont_installation() {
 		wget -q -P $HOME/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
 		unzip $HOME/.local/share/fonts/JetBrainsMono.zip -d $HOME/.local/share/fonts/
 		fc-cache -f $HOME/.local/share/fonts/
-		NFO="\033[32m[+] nerdfont installed \033[0m"
+		NFO="\033[32m[+] NerdFont has been installed \033[0m"
 		echo $NFO
 		
 	else
@@ -51,12 +54,12 @@ go_installation () {
 	sh -c "(wget -q https://go.dev/dl/go1.23.3.linux-amd64.tar.gz -O $HOME/Downloads/go1.23.3.linux-amd64.tar.gz)"
 	sudo rm -rf /usr/local/go && tar -C /usr/local -xzf $HOME/Downloads/go1.23.3.linux-amd64.tar.gz
 	export PATH="$PATH:/usr/local/go/bin"
-	GOO="\033[32m[+] Go Installed and Path is set"
+	GOO="\033[32m[+] Go has been installed and path has been set"
 	echo $GOO
 }
 
 catpuccin_installation () {
-	terminator_config="$terminator_config"
+	terminator_config=".config/terminator/config"
 	echo "\033[34m[!] Installing Terminator catpuccin\033[0m"
 	mkdir $HOME/.config/terminator
 	touch $HOME/$terminator_config
@@ -107,12 +110,13 @@ catpuccin_installation () {
 	echo  '      type = Terminal' >> $HOME/$terminator_config
 	echo  '      parent = window0' >> $HOME/$terminator_config
 	echo  '[plugins]' >> $HOME/$terminator_config
-	CTO="\033[32m[+] Terminator catpuccin set \033[0m"
+	CTO="\033[32m[+] Catpuccin Theme has been set. \033[0m"
 	echo $CTO
 }
 
+
 copyq_installation () {
-	copyq_service="$copyq_service"
+	copyq_service="/etc/systemd/system/copyq.service"
 	echo "\033[34m[!] Setting CopyQ \033[0m"
 	sudo touch $copyq_service
 	sudo chmod 777 $copyq_service
@@ -135,9 +139,10 @@ copyq_installation () {
 	sudo systemctl daemon-reload
 	sudo systemctl enable copyq.service
 	sudo systemctl start copyq.service
-	CO="\033[32m[+] CopyQ Finished Installing \033[0m"
+	CO="\033[32m[+] CopyQ has been installed. \033[0m"
 	echo $CO
 }
+
 
 superfile_installation () {
 	echo "\033[34m[!] Installing Superfile File Manager \033[0m"
@@ -145,6 +150,7 @@ superfile_installation () {
 	SPFO="\033[32m[+] Superfile File Manager Installed \033[0m"
 	echo $SPFO
 }
+
 
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
@@ -173,6 +179,7 @@ main () {
 	superfile_installation
 	alias_environment_installation
 	
+	echo $ATRO
 	echo $NFO
 	echo $ZSHO
 	echo $NFO
