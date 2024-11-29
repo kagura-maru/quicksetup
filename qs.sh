@@ -19,7 +19,7 @@ autorecon_installation () {
 }
 
 zsh_installation() {
-	if [ ! -f '$HOME/.zshrc' ]; then	
+	if [ ! -f '/home/kali/.zshrc' ]; then	
 		echo "\033[34m[!] Installing ZSH and Plugins \033[0m"
 		sh -c "$(wget -q https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 		git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -35,14 +35,13 @@ zsh_installation() {
 }
 
 nerdfont_installation() {
-	if [ ! -f "$HOME/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf" ]; then	
+	if [ ! -f "/home/kali/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf" ]; then	
 		echo "\033[34m[!] Installing nerdfont \033[0m"
 		wget -q -P $HOME/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
 		unzip $HOME/.local/share/fonts/JetBrainsMono.zip -d $HOME/.local/share/fonts/
 		fc-cache -f $HOME/.local/share/fonts/
 		NFO="\033[32m[+] NerdFont has been installed \033[0m"
 		echo $NFO
-		
 	else
 		NFO="\033[34m[!] NerdFont is already installed.\033[0m"
 		echo $NFO
