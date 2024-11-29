@@ -168,6 +168,7 @@ main () {
 	echo "\033[34m[!] Updating\033[0m"
 	
 	preparation
+ 	sudo updatedb
 	autorecon_installation
 	zsh_installation
 	nerdfont_installation
