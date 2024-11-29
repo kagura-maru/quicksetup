@@ -53,7 +53,7 @@ go_installation () {
 	echo "\033[34m[!] Installing Go \033[0m"
 	sh -c "(wget -q https://go.dev/dl/go1.23.3.linux-amd64.tar.gz -O $HOME/Downloads/go1.23.3.linux-amd64.tar.gz)"
 	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $HOME/Downloads/go1.23.3.linux-amd64.tar.gz
-	export PATH="$PATH:/usr/local/go/bin"
+	export PATH="$PATH:$HOME/go/bin"
 	GOO="\033[32m[+] Go has been installed and path has been set"
 	echo $GOO
 }
