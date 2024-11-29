@@ -7,7 +7,7 @@ preparation () {
 	sudo apt-get update -y && sudo apt-get upgrade -y
 	sudo apt remove needrestart
 	echo "\033[34m[!] Installing CopyQ, Terminator Terminal and Sublime Gobuster \033[0m"
-	sudo apt-get install copyq terminator sublime-text gobuster seclists curl dnsrecon enum4linux feroxbuster gobuster impacket-scripts nbtscan nikto nmap onesixtyone oscanner redis-tools smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf nuclei python3-venv --fix-missing -y
+	sudo apt-get install copyq terminator sublime-text gobuster seclists curl dnsrecon enum4linux feroxbuster gobuster impacket-scripts nbtscan nikto nmap onesixtyone oscanner redis-tools smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf nuclei python3-venv locate --fix-missing -y
 }
 
 autorecon_installation () {
