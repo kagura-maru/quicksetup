@@ -37,9 +37,9 @@ zsh_installation() {
 nerdfont_installation() {
 	if [ ! -f "/home/kali/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf" ]; then	
 		echo "\033[34m[!] Installing nerdfont \033[0m"
-		wget -q -P $HOME/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
-		unzip $HOME/.local/share/fonts/JetBrainsMono.zip -d $HOME/.local/share/fonts/
-		fc-cache -f $HOME/.local/share/fonts/
+		wget -q -P /home/kali/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
+		unzip /home/kali/.local/share/fonts/JetBrainsMono.zip -d /home/kali/.local/share/fonts/
+		fc-cache -f /home/kali/.local/share/fonts/
 		NFO="\033[32m[+] NerdFont has been installed \033[0m"
 		echo $NFO
 	else
@@ -52,7 +52,7 @@ go_installation () {
 	echo "\033[34m[!] Installing Go \033[0m"
 	sh -c "(wget -q https://go.dev/dl/go1.23.3.linux-amd64.tar.gz -O $HOME/Downloads/go1.23.3.linux-amd64.tar.gz)"
 	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $HOME/Downloads/go1.23.3.linux-amd64.tar.gz
-	export PATH="$PATH:$HOME/go/bin"
+	export PATH="$PATH:/home/kali/go/bin"
 	GOO="\033[32m[+] Go has been installed and path has been set"
 	echo $GOO
 }
@@ -151,16 +151,18 @@ superfile_installation () {
 
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
-	export PATH="$HOME/.local/bin:$PATH"
+	export PATH="/home/kali/.local/bin:$PATH"
 
 	mkdir $HOME/Desktop/tool
 	mkdir $HOME/Desktop/htb
 	mkdir $HOME/Desktop/assessment
 
-	alias assessment="cd $HOME/Desktop/assessment"
-	alias tool="cd $HOME/Desktop/tool"
-	alias htb="cd $HOME/Desktop/htb"
-	alias hosts="sudo nano /etc/hosts"
+	alias assessment="cd $HOME/Desktop/assessment" >> /.zshrc
+	alias tool="cd $HOME/Desktop/tool" >> /.zshrc
+	alias htb="cd $HOME/Desktop/htb" >> /.zshrc
+	alias hosts="sudo nano /etc/hosts" >> /.zshrc
+ 	alias mpd='mousepad' >> /.zshrc
+  	alias up="echo ''; pwd; ls -la .; echo ''; (ip -br -4 a | grep -E 'UP|UNKNOWN') grep -v 'lo'; python -m http.server" >> /.zshrc
 }
 
 main () {
@@ -177,8 +179,8 @@ main () {
 	superfile_installation
 	alias_environment_installation
 
+	echo '\n'
 	echo $ATRO
-	echo $NFO
 	echo $ZSHO
 	echo $NFO
 	echo $GOO
