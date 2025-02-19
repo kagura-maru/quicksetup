@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# v0.05
+# v0.06
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -162,7 +162,7 @@ alias_environment_installation () {
 	alias htb="cd $HOME/Desktop/htb" >> /.zshrc
 	alias hosts="sudo nano /etc/hosts" >> /.zshrc
  	alias mpd='mousepad' >> /.zshrc
-  	alias up="echo ''; pwd; ls -la .; echo ''; (ip -br -4 a | grep -E 'UP|UNKNOWN') grep -v 'lo'; python -m http.server" >> /.zshrc
+  	alias up="echo ''; pwd; ls -la .; echo ''; (ip -br -4 a | grep -E 'UP|UNKNOWN') | grep -v 'lo'; python -m http.server" >> /.zshrc
 }
 
 main () {
