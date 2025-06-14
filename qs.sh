@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# v0.07
+# v0.08
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -141,14 +141,6 @@ copyq_installation () {
 	echo $CO
 }
 
-# superfile
-superfile_installation () {
-	echo "\033[34m[!] Installing Superfile File Manager \033[0m"
-	bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
-	SPFO="\033[32m[+] Superfile File Manager Installed \033[0m"
-	echo $SPFO
-}
-
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
 	export PATH="/home/kali/.local/bin:$PATH"
@@ -178,7 +170,6 @@ main () {
 	go_installation
 	catpuccin_installation
 	copyq_installation
-	superfile_installation
 	alias_environment_installation
 
 	echo '\n'
