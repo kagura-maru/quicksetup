@@ -4,7 +4,6 @@
 # 2. Update Go Binary URL
 # 3. Include Terminator Terminal
 # 4. Extract rockyou.txt.gz
-# 5. 
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
