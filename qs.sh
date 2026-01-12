@@ -111,6 +111,7 @@ catpuccin_installation () {
 }
 
 copyq_installation () {
+	sudo apt-get install copyq
 	copyq_service="/etc/systemd/system/copyq.service"
 	echo "\033[34m[!] Setting CopyQ \033[0m"
 	sudo touch $copyq_service
