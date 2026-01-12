@@ -2,7 +2,9 @@
 # v0.09 - Lazy Setup for just a quick run on a new VM
 # 1. Remove nerdfont installation
 # 2. Update Go Binary URL
-# 
+# 3. Include Terminator Terminal
+# 4. Extract rockyou.txt.gz
+# 5. 
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -11,6 +13,13 @@ preparation () {
 	sudo apt remove needrestart
 	echo "\033[34m[!] Installing CopyQ, Terminator Terminal and Sublime Gobuster \033[0m"
 	sudo apt-get install copyq terminator sublime-text gobuster seclists curl dnsrecon enum4linux feroxbuster gobuster impacket-scripts nbtscan nikto nmap onesixtyone oscanner redis-tools smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf nuclei python3-venv locate --fix-missing -y
+}
+
+terminator_installation () {
+	echo "\033[34m[!] Installing Terminator Terminal \033[0m"
+	sudo apt-get install terminator
+	TTI="\033[32m[+] Terminator Terminal has been installed"
+	echo $TTI
 }
 
 autorecon_installation () {
@@ -133,7 +142,7 @@ copyq_installation () {
 alias_environment_installation () {
 	echo "\033[34m[!] Setting Desktop Directories and alias \033[0m"
 	export PATH="/home/kali/.local/bin:$PATH"
-
+	gunzip -d "/usr/share/wordlists/rockyou.txt.gz"
 	mkdir $HOME/Desktop/tool
 	mkdir $HOME/Desktop/htb
 	mkdir $HOME/Desktop/assessment
@@ -154,6 +163,7 @@ main () {
 	
 	preparation
  	sudo updatedb
+	terminator_installation
 	autorecon_installation
 	zsh_installation
 	go_installation
@@ -163,6 +173,7 @@ main () {
 
 	echo '\n'
 	echo $ATRO
+	echo $TTI
 	echo $ZSHO
 	echo $GOO
 	echo $CTO
