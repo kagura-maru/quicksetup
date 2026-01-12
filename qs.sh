@@ -1,5 +1,8 @@
 #!/usr/bin/sh
-# v0.08
+# v0.09 - Lazy Setup for just a quick run on a new VM
+# 1. Remove nerdfont installation
+# 2. Update Go Binary URL
+# 
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -34,24 +37,10 @@ zsh_installation() {
 	fi
 }
 
-nerdfont_installation() {
-	if [ ! -f "/home/kali/.local/share/fonts/JetBrainsMonoNerdFont-Medium.ttf" ]; then	
-		echo "\033[34m[!] Installing nerdfont \033[0m"
-		wget -q -P /home/kali/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip
-		unzip /home/kali/.local/share/fonts/JetBrainsMono.zip -d /home/kali/.local/share/fonts/
-		fc-cache -f /home/kali/.local/share/fonts/
-		NFO="\033[32m[+] NerdFont has been installed \033[0m"
-		echo $NFO
-	else
-		NFO="\033[34m[!] NerdFont is already installed.\033[0m"
-		echo $NFO
-	fi
-}
-
 go_installation () {
 	echo "\033[34m[!] Installing Go \033[0m"
-	sh -c "(wget -q https://go.dev/dl/go1.23.3.linux-amd64.tar.gz -O $HOME/Downloads/go1.23.3.linux-amd64.tar.gz)"
-	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $HOME/Downloads/go1.23.3.linux-amd64.tar.gz
+	sh -c "(wget -q https://go.dev/dl/go1.25.5.linux-amd64.tar.gz -O $HOME/Downloads/go1.25.5.linux-amd64.tar.gz)"
+	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $HOME/Downloads/go1.25.5.linux-amd64.tar.gz
 	export PATH="$PATH:/home/kali/go/bin"
 	GOO="\033[32m[+] Go has been installed and path has been set"
 	echo $GOO
@@ -166,7 +155,6 @@ main () {
  	sudo updatedb
 	autorecon_installation
 	zsh_installation
-	nerdfont_installation
 	go_installation
 	catpuccin_installation
 	copyq_installation
@@ -175,7 +163,6 @@ main () {
 	echo '\n'
 	echo $ATRO
 	echo $ZSHO
-	echo $NFO
 	echo $GOO
 	echo $CTO
 	echo $CO
