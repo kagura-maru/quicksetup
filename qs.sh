@@ -182,7 +182,7 @@ additional_scripts () {
 }
 
 main () {
-	echo "\033[32m[!] QuickSetup v0.09 - 12 January 2026 \033[0m"
+	echo "\033[32m[!] QuickSetup v0.10 - 16 March 2026 \033[0m"
 	echo "\033[34m[!] Updating\033[0m"
 	
 	preparation
