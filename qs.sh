@@ -1,9 +1,12 @@
 #!/usr/bin/sh
-# v0.09 - Lazy Setup for just a quick run on a new VM
-# 1. Remove nerdfont installation
-# 2. Update Go Binary URL
-# 3. Include Terminator Terminal
-# 4. Extract rockyou.txt.gz
+# v0.10 - Lazy Setup for just a quick run on a new VM
+# 1. Added ffuf-gen.py and nmap-parser.py scripts to be downloaded and executed
+# 2. Added additional alias and function for .zshrc
+#
+# Future Improvements
+# 1. To optimize code
+# 2. Add modular installations
+# 
 
 preparation () {
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -150,10 +153,32 @@ alias_environment_installation () {
 	alias tool="cd $HOME/Desktop/tool" >> ~/.zshrc
  	alias aa="cd -"
 	alias htb="cd $HOME/Desktop/htb" >> ~/.zshrc
- 	alias ipp="ip -4 -br a | grep -E 'UP|UNKNOWN' | grep -v 'lo'"
+ 	alias ipp="ip -4 -br a | grep -E 'UP|UNKNOWN' | grep -v 'lo'; ipe"
 	alias hosts="sudo nano /etc/hosts" >> ~/.zshrc
  	alias mpd='mousepad' >> ~/.zshrc
   	alias up="echo ''; pwd; ls -la .; echo ''; (ip -br -4 a | grep -E 'UP|UNKNOWN') | grep -v 'lo'; python -m http.server" >> ~/.zshrc
+	
+	function ipe() {
+        grabIP=$(curl -4 -s icanhazip.com)
+        if [ $grabIP == '' ]; then
+         echo "[!] $grabIP is your public IP"
+        fi
+	}
+
+}
+
+additional_scripts () {
+	if [ ! -f '/home/kali/.local/bin' ]; then	
+		echo "\033[34m[!] Downloading additional scripts\033[0m"
+		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/ffuf-gen.py -O /home/kali/.local/bin/
+		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/nmap-parser.py -o /home/kali/.local/bin/
+		chmod +x /home/kali/.local/bin/ffuf-gen.py /home/kali/.local/bin/nmap-parser.py
+		if [ ! -f '/home/kali/.local/bin/nmap-parser.py']; then
+			echo "[+] Additional scripts has been installed"
+		else 
+			echo "[!] There are errors installign the scripts"
+		fi
+	fi
 }
 
 main () {
@@ -169,6 +194,7 @@ main () {
 	catpuccin_installation
 	copyq_installation
 	alias_environment_installation
+	additional_scripts
 
 	echo '\n'
 	echo $ATRO
