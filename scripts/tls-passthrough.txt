@@ -1,0 +1,20 @@
+# include in burp TLS passthrough to filter these out
+
+.*\.googleapis\.com
+.*\.gstatic\.com
+.*\.google-analytics\.com
+.*\.googletagmanager\.com
+.*\.doubleclick\.net
+.*\.googleadservices\.com
+.*\.googlesyndication\.com
+.*\.mozilla\.org
+.*\.tiktok\.com
+.*\.pinterest\.com
+.*\.linkedin\.com
+.*\.detectportal\.firefox\.com
+.*\.services\.mozilla\.com
+.*\.mozilla\.com
+.*\.google\.com
+.*\.goog
+.*\.withgoogle\.com
+.*\.youtube\.com
