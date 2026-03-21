@@ -1,8 +1,9 @@
 #!/usr/bin/sh
-# v0.10 - Lazy Setup for just a quick run on a new VM
-# 1. Added ffuf-gen.py and nmap-parser.py scripts to be downloaded and executed
-# 2. Added additional alias and function for .zshrc
-#
+# v0.11 - Lazy Setup for just a quick run on a new VM
+# 1. Fixed issue with the ipe() functions upon installation.
+# 2. All catpuccin theme now have infinite scrollback and doesnt show title bar
+# 3. Added 2s sleep timer for each process of copyq daemon service
+# 
 # Future Improvements
 # 1. To optimize code
 # 2. Add modular installations
@@ -80,23 +81,31 @@ catpuccin_installation () {
 	echo  '    cursor_color = "#dc8a78"' >> $HOME/$terminator_config
 	echo  '    background_color = "#eff1f5"' >> $HOME/$terminator_config
 	echo  '    foreground_color = "#4c4f69"' >> $HOME/$terminator_config
+	echo  '    show_titlebar = False' >> $HOME/$terminator_config
+	echo  '    scrollback_infinite = True' >> $HOME/$terminator_config
 	echo  '    palette = "#5c5f77:#d20f39:#40a02b:#df8e1d:#1e66f5:#ea76cb:#179299:#acb0be:#6c6f85:#d20f39:#40a02b:#df8e1d:#1e66f5:#ea76cb:#179299:#bcc0cc"' >> $HOME/$terminator_config 
 	echo  '    background_image = None' >> $HOME/$terminator_config
 	echo  '  [[Catppuccin_Frappe]]' >> $HOME/$terminator_config
 	echo  '    cursor_color = "#f2d5cf"' >> $HOME/$terminator_config
 	echo  '    background_color = "#303446"' >> $HOME/$terminator_config
+	echo  '    show_titlebar = False' >> $HOME/$terminator_config
+	echo  '    scrollback_infinite = True' >> $HOME/$terminator_config
 	echo  '    foreground_color = "#c6d0f5"' >> $HOME/$terminator_config
 	echo  '    palette = "#51576d:#e78284:#a6d189:#e5c890:#8caaee:#f4b8e4:#81c8be:#b5bfe2:#626880:#e78284:#a6d189:#e5c890:#8caaee:#f4b8e4:#81c8be:#a5adce"' >> $HOME/$terminator_config 
 	echo  '    background_image = None' >> $HOME/$terminator_config
 	echo  '  [[Catppuccin_Macchiato]]' >> $HOME/$terminator_config
 	echo  '    cursor_color = "#f4dbd6"' >> $HOME/$terminator_config
 	echo  '    background_color = "#24273a"' >> $HOME/$terminator_config
+	echo  '    show_titlebar = False' >> $HOME/$terminator_config
+	echo  '    scrollback_infinite = True' >> $HOME/$terminator_config
 	echo  '    foreground_color = "#cad3f5"' >> $HOME/$terminator_config
 	echo  '    palette = "#494d64:#ed8796:#a6da95:#eed49f:#8aadf4:#f5bde6:#8bd5ca:#b8c0e0:#5b6078:#ed8796:#a6da95:#eed49f:#8aadf4:#f5bde6:#8bd5ca:#a5adcb"' >> $HOME/$terminator_config 
 	echo  '    background_image = None' >> $HOME/$terminator_config
 	echo  '  [[Catppuccin_Mocha]]' >> $HOME/$terminator_config
 	echo  '    cursor_color = "#f5e0dc"' >> $HOME/$terminator_config
 	echo  '    background_color = "#1e1e2e"' >> $HOME/$terminator_config
+	echo  '    show_titlebar = False' >> $HOME/$terminator_config
+	echo  '    scrollback_infinite = True' >> $HOME/$terminator_config
 	echo  '    foreground_color = "#cdd6f4"' >> $HOME/$terminator_config
 	echo  '    palette = "#45475a:#f38ba8:#a6e3a1:#f9e2af:#89b4fa:#f5c2e7:#94e2d5:#bac2de:#585b70:#f38ba8:#a6e3a1:#f9e2af:#89b4fa:#f5c2e7:#94e2d5:#a6adc8"' >> $HOME/$terminator_config 
 	echo  '    background_image = None' >> $HOME/$terminator_config
@@ -117,7 +126,7 @@ copyq_installation () {
 	copyq_service="/etc/systemd/system/copyq.service"
 	echo "\033[34m[!] Setting CopyQ \033[0m"
 	sudo touch $copyq_service
-	sudo chmod 777 $copyq_service
+	sudo chmod 777 $copyq_service # Dangerous for having 777
 	sudo echo '[Unit]' > $copyq_service
 	sudo echo 'Description=CopyQ Clipboard Manager' >> $copyq_service
 	sudo echo 'Documentation=man:copyq(1)' >> $copyq_service
@@ -134,8 +143,8 @@ copyq_installation () {
 	sudo echo '[Install]' >> $copyq_service
 	sudo echo 'WantedBy=default.target' >> $copyq_service
 	sudo chmod 755 $copyq_service
-	sudo systemctl daemon-reload
-	sudo systemctl enable copyq.service
+	sudo systemctl daemon-reload; sleep 2
+	sudo systemctl enable copyq.service; sleep 2 # added sleeping time as 'started too fast' error keep occured
 	sudo systemctl start copyq.service
 	CO="\033[32m[+] CopyQ has been installed. \033[0m"
 	echo $CO
@@ -151,19 +160,21 @@ alias_environment_installation () {
 
 	alias assessment="cd $HOME/Desktop/assessment" >> ~/.zshrc
 	alias tool="cd $HOME/Desktop/tool" >> ~/.zshrc
- 	alias aa="cd -"
+ 	alias aa="cd -" >> ~/.zshrc
 	alias htb="cd $HOME/Desktop/htb" >> ~/.zshrc
  	alias ipp="ip -4 -br a | grep -E 'UP|UNKNOWN' | grep -v 'lo'; ipe"
 	alias hosts="sudo nano /etc/hosts" >> ~/.zshrc
  	alias mpd='mousepad' >> ~/.zshrc
   	alias up="echo ''; pwd; ls -la .; echo ''; (ip -br -4 a | grep -E 'UP|UNKNOWN') | grep -v 'lo'; python -m http.server" >> ~/.zshrc
 	
-	function ipe() {
-        grabIP=$(curl -4 -s icanhazip.com)
-        if [ $grabIP == '' ]; then
-         echo "[!] $grabIP is your public IP"
-        fi
-	}
+	(
+	echo 'function ipe() {'
+	echo 'grabIP=$(curl -4 -s icanhazip.com)'
+	echo 'if [ $grabIP == "" ]; then'
+	echo '\techo "[!] $grabIP is your public IP"'
+	echo 'fi'
+	echo '}'
+	) >> ~/.zshrc
 
 }
 
@@ -176,13 +187,13 @@ additional_scripts () {
 		if [ ! -f '/home/kali/.local/bin/nmap-parser.py']; then
 			echo "[+] Additional scripts has been installed"
 		else 
-			echo "[!] There are errors installign the scripts"
+			echo "[!] There are errors installing the scripts"
 		fi
 	fi
 }
 
 main () {
-	echo "\033[32m[!] QuickSetup v0.10 - 16 March 2026 \033[0m"
+	echo "\033[32m[!] QuickSetup v0.11 - 21 March 2026 \033[0m"
 	echo "\033[34m[!] Updating\033[0m"
 	
 	preparation
