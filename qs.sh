@@ -170,8 +170,8 @@ alias_environment_installation () {
 additional_scripts () {
 	if [ ! -f '/home/kali/.local/bin' ]; then	
 		echo "\033[34m[!] Downloading additional scripts\033[0m"
-		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/ffuf-gen.py -o /home/kali/.local/bin/
-		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/nmap-parser.py -o /home/kali/.local/bin/
+		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/ffuf-gen.py -P /home/kali/.local/bin/
+		wget https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/nmap-parser.py -P /home/kali/.local/bin/
 		chmod +x /home/kali/.local/bin/ffuf-gen.py /home/kali/.local/bin/nmap-parser.py
 		if [ ! -f '/home/kali/.local/bin/nmap-parser.py']; then
 			echo "[+] Additional scripts has been installed"
