@@ -18,7 +18,7 @@ Additional Scripts are mentioned down below:
 Download with:
 
 ```
-git clone https://github.com/kagura-maru/ffuf-gen
+curl -sO https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/ffuf-gen.py
 ```
 
 Run with:
@@ -58,7 +58,7 @@ ffuf -t 40 -c -v -u http://10.48.177.93/FUZZ -w /usr/share/seclists/Discovery/We
 Download with
 
 ```
-git clone https://github.com/kagura-maru/nmap_parser-py
+curl -sO https://raw.githubusercontent.com/kagura-maru/quicksetup/refs/heads/main/scripts/nmap-parser.py
 ```
 
 To run:
