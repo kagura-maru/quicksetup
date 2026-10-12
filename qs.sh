@@ -353,25 +353,6 @@ function ipe() {
     fi
 }
 
-function nmapp() {
-	if [ -z "$1" ]; then
-		echo "Error: No target provided. (eg: nmapp 127.0.0.1)"
-		return 1
-	else
-		local host=$1
-		echo -e ""
-		echo -e "\033[34m[*] Running Fast TCP Nmap Scan on $1\033[0m"
-		local fnmap=$(nmap -F -T4 -Pn $host -oN fast-tcp-$1.nmap | grep 'open' | awk -F '/' '{printf $1","}')
-		echo -e "\033[36m[+] Opened Ports for $host - $fnmap\033[0m"
-		echo -e "\033[34m[*] Running Full TCP Nmap Scan on $1\033[0m"
-		local qnmap=$(nmap -p- -T4 -Pn $host -oN all-tcp-$1.nmap | grep 'open' | awk -F '/' '{printf $1","}')
-		echo -e "\033[36m[+] Opened Ports for $host - $qnmap\033[0m"
-		echo -e "\033[34m[*] Running Open Service Nmap Scan\033[0m"
-		nmap -p $qnmap -sCV $host -oN open-services-$1.nmap
-		echo -e "\033[36m[+] Finished Scanning on $host\033[0m"
-	fi
-}
-
 IPE_EOF
     fi
 
