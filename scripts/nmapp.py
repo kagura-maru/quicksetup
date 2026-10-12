@@ -5,6 +5,7 @@ import glob
 import re
 import argparse
 import subprocess
+import ipaddress
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -12,19 +13,59 @@ from openpyxl.utils import get_column_letter
 
 def print_help():
     help_text = """
-Usage: python nmapp.py [OPTIONS] [NMAP_FILES...]
+Usage: python nmapp.py [OPTIONS] [TARGET_OR_FILES...]
 
 Options:
   -h, --help            Show this help message and syntax
   -iL <target_file>     Scan a list of targets from a file using the automated nmapp workflow
+  -g, --grep [pattern]  Find and parse existing .nmap files matching pattern or containing 'open' (e.g. "open-services-*")
   -o, --output <file>   Output Excel filename (default: nmap_port_summary.xlsx)
 
-Examples:
-  python nmapp.py open-services-*.nmap
-  python nmapp.py -iL targets.txt
-  python nmapp.py -iL targets.txt -o custom_report.xlsx
+Target Formats:
+  - Single IP:          python nmapp.py 172.16.123.100
+  - CIDR Subnet:        python nmapp.py 172.16.123.0/24
+  - IP Range:           python nmapp.py 172.16.123.50-60
+  - Target List File:   python nmapp.py -iL targets.txt
+  - Grep existing files:python nmapp.py -g "open-services-*.nmap"
 """
     print(help_text)
+
+def expand_target_input(target_str):
+    targets = []
+    target_str = target_str.strip()
+    try:
+        if '-' in target_str and '.' in target_str and '/' not in target_str:
+            base_ip, end_part = target_str.rsplit('-', 1)
+            base_ip = base_ip.strip()
+            end_part = end_part.strip()
+            
+            if '.' in end_part:
+                start_octets = base_ip.split('.')
+                end_octets = end_part.split('.')
+                prefix = ".".join(start_octets[:3])
+                start_range = int(start_octets[3])
+                end_range = int(end_octets[3])
+                for oct_val in range(start_range, end_range + 1):
+                    targets.append(f"{prefix}.{oct_val}")
+            else:
+                prefix = ".".join(base_ip.split('.')[:3])
+                start_range = int(base_ip.split('.')[3])
+                end_range = int(end_part)
+                for oct_val in range(start_range, end_range + 1):
+                    targets.append(f"{prefix}.{oct_val}")
+        elif '/' in target_str:
+            net = ipaddress.ip_network(target_str, strict=False)
+            for ip in net.hosts():
+                targets.append(str(ip))
+            if not targets:
+                for ip in net:
+                    targets.append(str(ip))
+        else:
+            ipaddress.ip_address(target_str)
+            targets.append(target_str)
+    except ValueError:
+        targets.append(target_str)
+    return targets
 
 def run_nmap_workflow(target):
     print(f"\033[34m[*] Running Fast TCP Nmap Scan on {target}\033[0m")
@@ -253,7 +294,7 @@ def main():
         
     output_file = "nmap_port_summary.xlsx"
     targets_to_scan = []
-    file_args = []
+    file_patterns = []
     
     i = 1
     while i < len(sys.argv):
@@ -269,7 +310,7 @@ def main():
                         for line in tf:
                             t = line.strip()
                             if t and not t.startswith('#'):
-                                targets_to_scan.append(t)
+                                targets_to_scan.extend(expand_target_input(t))
                 else:
                     print(f"Error: Target list file '{target_list_file}' not found.", file=sys.stderr)
                     sys.exit(1)
@@ -277,6 +318,19 @@ def main():
             else:
                 print("Error: -iL requires a target file argument.", file=sys.stderr)
                 sys.exit(1)
+        elif arg in ['-g', '--grep']:
+            # Check if next arg is a custom pattern or another flag
+            if i + 1 < len(sys.argv) and not sys.argv[i+1].startswith('-'):
+                grep_pattern = sys.argv[i+1]
+                i += 2
+            else:
+                grep_pattern = "open-*.nmap"
+                i += 1
+            
+            matched_files = glob.glob(grep_pattern)
+            if not matched_files:
+                matched_files = [f for f in os.listdir('.') if grep_pattern.replace('*', '') in f and f.endswith('.nmap')]
+            file_patterns.extend(matched_files)
         elif arg in ['-o', '--output']:
             if i + 1 < len(sys.argv):
                 output_file = sys.argv[i+1]
@@ -285,7 +339,14 @@ def main():
                 print("Error: Output flag requires a filename.", file=sys.stderr)
                 sys.exit(1)
         else:
-            file_args.append(arg)
+            expanded = expand_target_input(arg)
+            if len(expanded) > 1 or '/' in arg or '-' in arg:
+                targets_to_scan.extend(expanded)
+            else:
+                if os.path.exists(arg) or '*' in arg:
+                    file_patterns.append(arg)
+                else:
+                    targets_to_scan.extend(expanded)
             i += 1
             
     generated_files = []
@@ -297,7 +358,7 @@ def main():
             if os.path.exists(svc_file):
                 generated_files.append(svc_file)
     else:
-        generated_files = file_args
+        generated_files = file_patterns
         
     if not generated_files:
         print("Error: No Nmap files or targets specified.", file=sys.stderr)
