@@ -333,7 +333,6 @@ mod_aliases() {
     append_once "$ZSHRC" 'alias tool="cd $HOME/Desktop/tool"'
     append_once "$ZSHRC" 'alias aa="cd -"'
     append_once "$ZSHRC" 'alias htb="cd $HOME/Desktop/htb"'
-    append_once "$ZSHRC" 'alias ipp="ip -4 -br a | grep -E '\''UP|UNKNOWN'\'' | grep -v '\''lo'\''; ipe"'
     append_once "$ZSHRC" 'alias hosts="sudo nano /etc/hosts"'
     append_once "$ZSHRC" 'alias mpd="mousepad"'
     append_once "$ZSHRC" 'alias up="echo '\'''\''; pwd; ls -la .; echo '\'''\''; (ip -br -4 a | grep -E '\''UP|UNKNOWN'\'') | grep -v '\''lo'\''; python3 -m http.server"'
@@ -342,6 +341,14 @@ mod_aliases() {
     # Fixed: original had inverted logic (printed when empty) and non-POSIX ==
     if ! grep -q 'function ipe()' "$ZSHRC" 2>/dev/null; then
         cat >> "$ZSHRC" << 'IPE_EOF'
+
+function ipp() {
+        echo -e "\e[1;32m[!] - Network Interfaces\e[0m"
+        ip -br -4 a | grep -E 'UP|UNKNOWN' | grep -v 'lo' | awk -F '/' '{print $1}' | awk '{print $1 " - " $3}'
+        echo -e "\n\e[1;32m[!] - Host File Configuration\e[0m"
+        cat /etc/hosts | grep . | grep -Ev 'localhost|kali|ip6|#'
+}
+
 
 function ipe() {
     local grabIP
